@@ -12,150 +12,170 @@ export interface Database {
       profiles: {
         Row: {
           id: string
-          display_name: string | null
-          username: string | null
-          avatar_url: string | null
+          display_name: string
+          username: string
           bio: string | null
+          avatar_url: string | null
           created_at: string
+          updated_at: string
         }
         Insert: {
           id: string
-          display_name?: string | null
-          username?: string | null
-          avatar_url?: string | null
+          display_name: string
+          username: string
           bio?: string | null
+          avatar_url?: string | null
           created_at?: string
+          updated_at?: string
         }
         Update: {
           id?: string
-          display_name?: string | null
-          username?: string | null
-          avatar_url?: string | null
+          display_name?: string
+          username?: string
           bio?: string | null
+          avatar_url?: string | null
           created_at?: string
+          updated_at?: string
         }
+        Relationships: []
       }
       recipes: {
         Row: {
           id: string
-          user_id: string
           title: string
-          slug: string
-          description: string | null
-          ingredients: Json | null
-          steps: Json | null
-          prep_time: number | null
-          cook_time: number | null
-          servings: number | null
-          category: string | null
-          cover_url: string | null
-          is_public: boolean
+          description: string
+          ingredients: string[]
+          instructions: string[]
+          prep_time: number
+          cook_time: number
+          servings: number
+          difficulty: 'easy' | 'medium' | 'hard'
+          cuisine: string
+          image_url: string | null
+          user_id: string
           created_at: string
           updated_at: string
         }
         Insert: {
           id?: string
-          user_id: string
           title: string
-          slug: string
-          description?: string | null
-          ingredients?: Json | null
-          steps?: Json | null
-          prep_time?: number | null
-          cook_time?: number | null
-          servings?: number | null
-          category?: string | null
-          cover_url?: string | null
-          is_public?: boolean
+          description: string
+          ingredients: string[]
+          instructions: string[]
+          prep_time: number
+          cook_time: number
+          servings: number
+          difficulty: 'easy' | 'medium' | 'hard'
+          cuisine: string
+          image_url?: string | null
+          user_id: string
           created_at?: string
           updated_at?: string
         }
         Update: {
           id?: string
-          user_id?: string
           title?: string
-          slug?: string
-          description?: string | null
-          ingredients?: Json | null
-          steps?: Json | null
-          prep_time?: number | null
-          cook_time?: number | null
-          servings?: number | null
-          category?: string | null
-          cover_url?: string | null
-          is_public?: boolean
+          description?: string
+          ingredients?: string[]
+          instructions?: string[]
+          prep_time?: number
+          cook_time?: number
+          servings?: number
+          difficulty?: 'easy' | 'medium' | 'hard'
+          cuisine?: string
+          image_url?: string | null
+          user_id?: string
           created_at?: string
           updated_at?: string
         }
-      }
-      recipe_images: {
-        Row: {
-          id: string
-          recipe_id: string
-          url: string
-          ordering: number
-        }
-        Insert: {
-          id?: string
-          recipe_id: string
-          url: string
-          ordering?: number
-        }
-        Update: {
-          id?: string
-          recipe_id?: string
-          url?: string
-          ordering?: number
-        }
+        Relationships: [
+          {
+            foreignKeyName: "recipes_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       comments: {
         Row: {
           id: string
-          recipe_id: string
-          user_id: string
           content: string
-          parent_id: string | null
+          user_id: string
+          recipe_id: string
           created_at: string
+          updated_at: string
         }
         Insert: {
           id?: string
-          recipe_id: string
-          user_id: string
           content: string
-          parent_id?: string | null
+          user_id: string
+          recipe_id: string
           created_at?: string
+          updated_at?: string
         }
         Update: {
           id?: string
-          recipe_id?: string
-          user_id?: string
           content?: string
-          parent_id?: string | null
+          user_id?: string
+          recipe_id?: string
           created_at?: string
+          updated_at?: string
         }
+        Relationships: [
+          {
+            foreignKeyName: "comments_recipe_id_fkey"
+            columns: ["recipe_id"]
+            referencedRelation: "recipes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comments_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       ratings: {
         Row: {
           id: string
-          recipe_id: string
-          user_id: string
           rating: number
+          user_id: string
+          recipe_id: string
           created_at: string
+          updated_at: string
         }
         Insert: {
           id?: string
-          recipe_id: string
-          user_id: string
           rating: number
+          user_id: string
+          recipe_id: string
           created_at?: string
+          updated_at?: string
         }
         Update: {
           id?: string
-          recipe_id?: string
-          user_id?: string
           rating?: number
+          user_id?: string
+          recipe_id?: string
           created_at?: string
+          updated_at?: string
         }
+        Relationships: [
+          {
+            foreignKeyName: "ratings_recipe_id_fkey"
+            columns: ["recipe_id"]
+            referencedRelation: "recipes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ratings_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       bookmarks: {
         Row: {
@@ -176,34 +196,72 @@ export interface Database {
           recipe_id?: string
           created_at?: string
         }
+        Relationships: [
+          {
+            foreignKeyName: "bookmarks_recipe_id_fkey"
+            columns: ["recipe_id"]
+            referencedRelation: "recipes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bookmarks_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       tags: {
         Row: {
           id: string
           name: string
+          created_at: string
         }
         Insert: {
           id?: string
           name: string
+          created_at?: string
         }
         Update: {
           id?: string
           name?: string
+          created_at?: string
         }
+        Relationships: []
       }
       recipe_tags: {
         Row: {
+          id: string
           recipe_id: string
           tag_id: string
+          created_at: string
         }
         Insert: {
+          id?: string
           recipe_id: string
           tag_id: string
+          created_at?: string
         }
         Update: {
+          id?: string
           recipe_id?: string
           tag_id?: string
+          created_at?: string
         }
+        Relationships: [
+          {
+            foreignKeyName: "recipe_tags_recipe_id_fkey"
+            columns: ["recipe_id"]
+            referencedRelation: "recipes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "recipe_tags_tag_id_fkey"
+            columns: ["tag_id"]
+            referencedRelation: "tags"
+            referencedColumns: ["id"]
+          }
+        ]
       }
     }
     Views: {

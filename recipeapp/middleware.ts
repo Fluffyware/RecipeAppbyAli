@@ -1,6 +1,6 @@
 import { updateSession } from './lib/supabase/middleware'
 
-export async function middleware(request: Request) {
+export async function middleware(request: any) {
   return await updateSession(request)
 }
 

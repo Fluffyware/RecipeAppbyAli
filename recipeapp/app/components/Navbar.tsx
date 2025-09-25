@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
+import AuthButton from "./AuthButton";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -21,25 +23,26 @@ const Navbar = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors duration-200">
+            <Link href="/recipes" className="text-gray-600 hover:text-gray-900 transition-colors duration-200">
               Browse Recipes
-            </a>
-            <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors duration-200">
-              How it Works
-            </a>
-            <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors duration-200">
-              About
-            </a>
+            </Link>
+            <Link href="/recipes/create" className="text-gray-600 hover:text-gray-900 transition-colors duration-200">
+              Create Recipe
+            </Link>
+            <Link href="/dashboard" className="text-gray-600 hover:text-gray-900 transition-colors duration-200">
+              Dashboard
+            </Link>
+            <Link href="/bookmarks" className="text-gray-600 hover:text-gray-900 transition-colors duration-200">
+              My Bookmarks
+            </Link>
+            <Link href="/profile" className="text-gray-600 hover:text-gray-900 transition-colors duration-200">
+              Profile
+            </Link>
           </div>
 
-          {/* Auth Buttons */}
-          <div className="hidden md:flex items-center space-x-4">
-            <button className="text-gray-600 hover:text-gray-900 transition-colors duration-200 font-medium">
-              Login
-            </button>
-            <button className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-2 rounded-full font-medium hover:from-purple-600 hover:to-pink-600 transition-all duration-200 transform hover:scale-105">
-              Register
-            </button>
+          {/* Auth Button */}
+          <div className="hidden md:block">
+            <AuthButton />
           </div>
 
           {/* Mobile menu button */}
@@ -63,22 +66,23 @@ const Navbar = () => {
         {isMenuOpen && (
           <div className="md:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1 bg-white border-t border-gray-200">
-              <a href="#" className="block px-3 py-2 text-gray-600 hover:text-gray-900 transition-colors duration-200">
+              <Link href="/recipes" className="block px-3 py-2 text-gray-600 hover:text-gray-900 transition-colors duration-200">
                 Browse Recipes
-              </a>
-              <a href="#" className="block px-3 py-2 text-gray-600 hover:text-gray-900 transition-colors duration-200">
-                How it Works
-              </a>
-              <a href="#" className="block px-3 py-2 text-gray-600 hover:text-gray-900 transition-colors duration-200">
-                About
-              </a>
+              </Link>
+              <Link href="/recipes/create" className="block px-3 py-2 text-gray-600 hover:text-gray-900 transition-colors duration-200">
+                Create Recipe
+              </Link>
+              <Link href="/dashboard" className="block px-3 py-2 text-gray-600 hover:text-gray-900 transition-colors duration-200">
+                Dashboard
+              </Link>
+              <Link href="/bookmarks" className="block px-3 py-2 text-gray-600 hover:text-gray-900 transition-colors duration-200">
+                My Bookmarks
+              </Link>
+              <Link href="/profile" className="block px-3 py-2 text-gray-600 hover:text-gray-900 transition-colors duration-200">
+                Profile
+              </Link>
               <div className="pt-4 border-t border-gray-200">
-                <button className="block w-full text-left px-3 py-2 text-gray-600 hover:text-gray-900 transition-colors duration-200 font-medium">
-                  Login
-                </button>
-                <button className="block w-full text-left px-3 py-2 mt-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg font-medium hover:from-purple-600 hover:to-pink-600 transition-all duration-200">
-                  Register
-                </button>
+                <AuthButton />
               </div>
             </div>
           </div>
@@ -89,6 +93,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-
-
-
