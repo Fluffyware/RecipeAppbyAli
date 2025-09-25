@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -15,7 +15,7 @@ export default function TestBookmarksPage() {
   });
   const [loading, setLoading] = useState(true);
 
-  const checkTables = async () => {
+  const checkTables = useCallback(async () => {
     if (!user) return;
 
     const supabase = createClient();
@@ -24,13 +24,13 @@ export default function TestBookmarksPage() {
       setLoading(true);
       
       // Check bookmarks table
-      const { data: bookmarksData, error: bookmarksError } = await supabase
+      const { error: bookmarksError } = await supabase
         .from('bookmarks')
         .select('id')
         .limit(1);
 
       // Check ratings table
-      const { data: ratingsData, error: ratingsError } = await supabase
+      const { error: ratingsError } = await supabase
         .from('ratings')
         .select('id')
         .limit(1);
@@ -51,7 +51,7 @@ export default function TestBookmarksPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
 
   const testBookmarkCreation = async () => {
     if (!user) return;
@@ -105,7 +105,7 @@ export default function TestBookmarksPage() {
     if (user) {
       checkTables();
     }
-  }, [user]);
+  }, [user, checkTables]);
 
   if (loading) {
     return (

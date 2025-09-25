@@ -45,7 +45,7 @@ const Comments = ({ recipeId }: CommentsProps) => {
 
     try {
       setSubmitting(true);
-      const { data, error } = await addComment(recipeId, user.id, newComment.trim());
+      const { error } = await addComment(recipeId, user.id, newComment.trim());
       
       if (error) {
         console.error('Error adding comment:', error);
