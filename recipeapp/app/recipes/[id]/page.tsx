@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 import RecipeActions from "@/app/components/RecipeActions";
+import Comments from "@/app/components/Comments";
 
 export default function RecipeDetailPage() {
   const params = useParams();
@@ -21,6 +22,10 @@ export default function RecipeDetailPage() {
     category?: string;
     created_at: string;
     is_public: boolean;
+    profiles?: {
+      display_name?: string;
+      username?: string;
+    };
   } | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -32,7 +37,13 @@ export default function RecipeDetailPage() {
       
       const { data, error } = await supabase
         .from('recipes')
-        .select('*')
+        .select(`
+          *,
+          profiles (
+            display_name,
+            username
+          )
+        `)
         .eq('id', params.id)
         .single();
 
@@ -238,7 +249,9 @@ export default function RecipeDetailPage() {
                 👤
               </div>
               <div>
-                <p className="font-semibold text-gray-900">Recipe Author</p>
+                <p className="font-semibold text-gray-900">
+                  {recipe.profiles?.display_name || recipe.profiles?.username || 'Anonymous Chef'}
+                </p>
                 <p className="text-sm text-gray-500">
                   Created on {new Date(recipe.created_at).toLocaleDateString()}
                 </p>
@@ -257,6 +270,11 @@ export default function RecipeDetailPage() {
               </button>
             </div>
           </div>
+        </div>
+
+        {/* Comments Section */}
+        <div className="mt-8">
+          <Comments recipeId={recipe.id} />
         </div>
       </div>
     </div>

@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { addBookmark, removeBookmark, checkBookmark } from "@/lib/bookmarks";
-import { addRating, getUserRating, getAverageRating } from "@/lib/ratings";
+import { addRatingSimple as addRating, getUserRating, getAverageRating } from "@/lib/ratings-simple";
 
 interface RecipeActionsProps {
   recipeId: string;
@@ -98,9 +98,21 @@ const RecipeActions = ({ recipeId, onBookmarkChange, onRatingChange }: RecipeAct
 
     try {
       setLoading(true);
-      const { error } = await addRating(recipeId, user.id, rating);
-      if (error) throw error;
+      console.log('Rating recipe:', { recipeId, userId: user.id, rating });
       
+      const { data, error } = await addRating(recipeId, user.id, rating);
+      
+      if (error) {
+        console.error('Rating error details:', {
+          message: error.message,
+          code: error.code,
+          details: error.details,
+          hint: error.hint
+        });
+        throw error;
+      }
+      
+      console.log('Rating successful:', data);
       setUserRating(rating);
       onRatingChange?.(rating);
       
@@ -108,7 +120,19 @@ const RecipeActions = ({ recipeId, onBookmarkChange, onRatingChange }: RecipeAct
       await fetchRatingData();
     } catch (error) {
       console.error('Error rating recipe:', error);
-      alert('Failed to rate recipe');
+      console.error('Error type:', typeof error);
+      console.error('Error details:', error);
+      
+      let errorMessage = 'Unknown error';
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      } else if (error && typeof error === 'object' && 'message' in error) {
+        errorMessage = String(error.message);
+      } else if (error && typeof error === 'string') {
+        errorMessage = error;
+      }
+      
+      alert(`Failed to rate recipe: ${errorMessage}`);
     } finally {
       setLoading(false);
     }

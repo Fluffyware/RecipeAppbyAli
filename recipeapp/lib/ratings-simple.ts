@@ -8,59 +8,49 @@ export interface Rating {
   created_at: string
 }
 
-export const addRating = async (recipeId: string, userId: string, rating: number) => {
+// Simple rating function using upsert
+export const addRatingSimple = async (recipeId: string, userId: string, rating: number) => {
   const supabase = createClient()
   
-  console.log('addRating called:', { recipeId, userId, rating });
+  console.log('addRatingSimple called:', { recipeId, userId, rating });
   
-  // First check if rating exists
-  const { data: existingRating, error: checkError } = await supabase
-    .from('ratings')
-    .select('id')
-    .eq('user_id', userId)
-    .eq('recipe_id', recipeId)
-    .single()
-
-  console.log('Existing rating check:', { existingRating, checkError });
-
-  if (checkError && checkError.code !== 'PGRST116') {
-    // If it's not a "no rows" error, return the error
-    console.error('Error checking existing rating:', checkError);
-    return { data: null, error: checkError }
-  }
-
-  // If checkError exists but it's PGRST116 (no rows), continue with insert
-
-  if (existingRating) {
-    // Update existing rating
-    console.log('Updating existing rating');
+  try {
+    // Use upsert with conflict resolution
     const { data, error } = await supabase
       .from('ratings')
-      .update({ 
-        rating: rating
-      })
-      .eq('user_id', userId)
-      .eq('recipe_id', recipeId)
-      .select()
-      .single()
-    
-    console.log('Update result:', { data, error });
-    return { data, error }
-  } else {
-    // Insert new rating
-    console.log('Inserting new rating');
-    const { data, error } = await supabase
-      .from('ratings')
-      .insert({
+      .upsert({
         user_id: userId,
         recipe_id: recipeId,
         rating: rating
+      }, {
+        onConflict: 'user_id,recipe_id'
       })
       .select()
       .single()
     
-    console.log('Insert result:', { data, error });
+    console.log('Upsert result:', { data, error });
+    
+    if (error) {
+      console.error('Upsert error details:', {
+        message: error.message,
+        code: error.code,
+        details: error.details,
+        hint: error.hint
+      });
+    }
+    
     return { data, error }
+  } catch (err) {
+    console.error('Upsert exception:', err);
+    return { 
+      data: null, 
+      error: { 
+        message: err instanceof Error ? err.message : 'Unknown error',
+        code: 'UNKNOWN',
+        details: null,
+        hint: null
+      }
+    }
   }
 }
 
