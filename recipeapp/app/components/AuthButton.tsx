@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import { signOut } from "@/lib/auth";
 
@@ -69,27 +70,27 @@ const AuthButton = () => {
 
       {isDropdownOpen && (
         <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
-          <a
+          <Link
             href="/profile"
             className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-200"
             onClick={() => setIsDropdownOpen(false)}
           >
             Profile
-          </a>
-          <a
+          </Link>
+          <Link
             href="/dashboard"
             className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-200"
             onClick={() => setIsDropdownOpen(false)}
           >
             Dashboard
-          </a>
-          <a
+          </Link>
+          <Link
             href="/recipes/create"
             className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-200"
             onClick={() => setIsDropdownOpen(false)}
           >
             Create Recipe
-          </a>
+          </Link>
           <hr className="my-1" />
           <button
             onClick={handleSignOut}
